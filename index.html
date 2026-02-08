@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz - Kim jesteś?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-box {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 650px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #00ffcc;
+    }
+    .question {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+.btn-skip {
+  background: #6c757d;
+  color: white;
+}
+    .btn-yes {
+      background: #28a745;
+      color: white;
+    }
+    .btn-no {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-restart {
+      background: #007bff;
+      color: white;
+      display: none;
+    }
+    .btn:hover {
+      opacity: 0.8;
+    }
+    .result {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #ffcc00;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <h1>Quiz: Kim jesteś?</h1>
+    <div id="question-box" class="question"></div>
+    <button id="yes-btn" class="btn btn-yes" onclick="answer('tak')">Tak</button>
+    <button id="maybe-yes-btn" class="btn btn-yes" onclick="answer('chyba-tak')">Chyba Tak</button>
+    <button id="no-btn" class="btn btn-no" onclick="answer('nie')">Nie</button>
+    <button id="maybe-no-btn" class="btn btn-no" onclick="answer('chyba-nie')">Chyba Nie</button>
+    <button id="skip-btn" class="btn btn-skip" onclick="skip()">Nie wiem</button>    
+    <button id="restart-btn" class="btn btn-restart" onclick="restart()">Jeszcze raz</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+const questions = [
+  { text: "1) Jesteś szczupły?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "2) Czy czasami nie myślisz?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] }, 
+  { text: "3) Lubisz Niebieski?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "4) Lubisz Fioletowy?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "5) Czy zabijasz w Minecraft Villager?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "6) Lubisz szybko biegać?", characters: [ { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "7) lubisz słońca?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "8) Czy lubisz złoto?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "9) Czy wolisz cień od światła?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "10) lubisz jak się na ciebie patrzy?", characters: [ { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "11) Lubisz układać rzeczy?", characters: [ { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "12) Czy boisz się wody?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 },  { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "13) Lubisz brązowy?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "14) Lubisz pizzę?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "15) Lubisz niedźwiedzie?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "16) Podkradasz się do innych?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
+  { text: "17) Lubisz wybuchy?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "18) Czy boisz się kotów?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
+  { text: "19) Lubisz Nether z Minecraft?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "20) Lubisz chodzić powoli?", characters: [ { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "21) Czy boisz się ostrych narzędzi?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "22) Lubisz strzelać z daleka?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "23) Czy masz dobrą celność?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, ] },
+  { text: "24) Lubisz animatroniki?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "25) Czy masz ciemne sekrety?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "26) Lubisz pierścienie?", characters: [ { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "27) Czy lubisz przygody?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "28) Czy jesteś wysoki?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "29) Lubisz teleportację?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "30) Czy lubisz scenę i śpiew?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "31) Czy lubisz zabawiać ludzi?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "32) Czy lubisz oceloty?", characters: [ { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "33) Czy lubisz wymianę?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "34) Lubisz Netherowe twierdze?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "35) Czy lubisz magię?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "36) Nosisz okuraly?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
+  { text: "37) Czy lubisz rocka?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "38) Czy lubisz króliki", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "39) Lubisz zielony?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "40) Lubisz mięso", characters: [ { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "41) Lubisz Jaskinie", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "42) Jesteś kobietą?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
+  { text: "43) Masz nos?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "44) Czy lubisz czarny?", characters: [ { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "45) Jesteś miły dla innych?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: -0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "46) Czy lubisz naukę?", characters: [ { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+];
+
+let current = 0;
+let answers = [];
+
+const questionBox = document.getElementById("question-box");
+const resultBox = document.getElementById("result");
+const skipBtn = document.getElementById("skip-btn");
+const yesBtn = document.getElementById("yes-btn");
+const noBtn = document.getElementById("no-btn");
+const maybeYesBtn = document.getElementById("maybe-yes-btn");
+const maybeNoBtn = document.getElementById("maybe-no-btn");
+const restartBtn = document.getElementById("restart-btn");
+
+function showQuestion() {
+  if (current < questions.length) {
+    questionBox.textContent = questions[current].text;
+    skipBtn.style.display = "inline-block"; 
+  } else {
+    calculateResult();
+  }
+}
+
+function answer(response) {
+  answers.push(response);
+  current++;
+  showQuestion();
+}
+
+function calculateResult() {
+  let results = [];
+
+questionBox.style.display = "none";
+yesBtn.style.display = "none";
+maybeYesBtn.style.display = "none";
+noBtn.style.display = "none";
+maybeNoBtn.style.display = "none";
+skipBtn.style.display = "none";
+restartBtn.style.display = "inline-block";
+
+let scores = {
+  "Bonnie": 0,
+  "Chica": 0,
+  "Creeper": 0,
+  "Enderman": 0,
+  "Foxy": 0,
+  "Freddy": 0,
+  "Harry Potter": 0,
+  "Hermiona": 0,
+  "Piglin": 0,
+  "Shadow": 0,
+  "Sonic": 0,
+  "Szkielet (Minecraft)": 0,
+  "Voldemort": 0,
+  "William Afton": 0,
+  "Zombie (Minecraft)": 0
+};
+
+answers.forEach((answer, i) => {
+  const q = questions[i];
+
+  q.characters.forEach(c => {
+    if (answer === "tak") scores[c.name] += c.yes ?? 0;
+    if (answer === "nie") scores[c.name] += c.no ?? 0;
+    if (answer === "chyba-tak") scores[c.name] += c.maybeYes ?? (c.yes * 0.5);
+    if (answer === "chyba-nie") scores[c.name] += c.maybeNo ?? (c.no * 0.5);
+  });
+});
+
+  let maxScore = Math.max(...Object.values(scores));
+  for (let char in scores) {
+    let percent = maxScore > 0 ? parseFloat(((scores[char] / maxScore) * 100).toFixed(2)) : 0;
+    results.push({ name: char, percent: percent });
+  }
+
+  results.sort((a, b) => b.percent - a.percent);
+
+  let showingDetails = false;
+
+  function renderView() {
+    if (showingDetails) {
+      let details = `<button id="show-details" class="btn btn-skip">Ukryj szczegóły</button>`;
+      details += "<h2>Pełne wyniki:</h2>";
+      results.forEach(r => {
+        details += `<p>${r.name}: ${r.percent}%</p>`;
+      });
+      resultBox.innerHTML = details;
+    } else {
+      let best = results[0];
+      let resultText = `<h2>Twój wynik:</h2><p><strong>${best.name}</strong> (${best.percent}%)</p>`;
+      resultText += `<button id="show-details" class="btn btn-skip">Pokaż szczegóły</button>`;
+      resultBox.innerHTML = resultText;
+    }
+
+    document.getElementById("show-details").onclick = function() {
+      showingDetails = !showingDetails;
+      renderView();
+    };
+  }
+
+  renderView();
+}
+
+// ✅ teraz te funkcje są poza calculateResult()
+function skip() {
+  answers.push("skip");
+  current++;
+  showQuestion();
+}
+
+function restart() {
+  current = 0;
+  answers = [];
+  questionBox.style.display = "block";
+  yesBtn.style.display = "inline-block";
+  maybeYesBtn.style.display = "inline-block";
+  noBtn.style.display = "inline-block";
+  maybeNoBtn.style.display = "inline-block";
+  skipBtn.style.display = "inline-block";
+  restartBtn.style.display = "none";
+  resultBox.innerHTML = "";
+  showQuestion();
+}
+
+showQuestion();
+</script>
+  
+</body>
+</html>
