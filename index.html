@@ -73,9 +73,7 @@
     <h1>Quiz: Kim jesteś?</h1>
     <div id="question-box" class="question"></div>
     <button id="yes-btn" class="btn btn-yes" onclick="answer('tak')">Tak</button>
-    <button id="maybe-yes-btn" class="btn btn-yes" onclick="answer('chyba-tak')">Chyba Tak</button>
     <button id="no-btn" class="btn btn-no" onclick="answer('nie')">Nie</button>
-    <button id="maybe-no-btn" class="btn btn-no" onclick="answer('chyba-nie')">Chyba Nie</button>
     <button id="skip-btn" class="btn btn-skip" onclick="skip()">Nie wiem</button>    
     <button id="restart-btn" class="btn btn-restart" onclick="restart()">Jeszcze raz</button>
     <div id="result" class="result"></div>
@@ -83,52 +81,64 @@
 
   <script>
 const questions = [
-  { text: "1) Jesteś szczupły?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "2) Czy czasami nie myślisz?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] }, 
-  { text: "3) Lubisz Niebieski?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "4) Lubisz Fioletowy?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "5) Czy zabijasz w Minecraft Villager?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "6) Lubisz szybko biegać?", characters: [ { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "7) lubisz słońca?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "8) Czy lubisz złoto?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "9) Czy wolisz cień od światła?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "10) lubisz jak się na ciebie patrzy?", characters: [ { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "11) Lubisz układać rzeczy?", characters: [ { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "12) Czy boisz się wody?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 },  { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "13) Lubisz brązowy?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "14) Lubisz pizzę?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "15) Lubisz niedźwiedzie?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "16) Podkradasz się do innych?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
-  { text: "17) Lubisz wybuchy?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "18) Czy boisz się kotów?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
-  { text: "19) Lubisz Nether z Minecraft?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "20) Lubisz chodzić powoli?", characters: [ { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "21) Czy boisz się ostrych narzędzi?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "22) Lubisz strzelać z daleka?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "23) Czy masz dobrą celność?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, ] },
-  { text: "24) Lubisz animatroniki?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "25) Czy masz ciemne sekrety?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "26) Lubisz pierścienie?", characters: [ { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "27) Czy lubisz przygody?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "28) Czy jesteś wysoki?", characters: [ { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "29) Lubisz teleportację?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "30) Czy lubisz scenę i śpiew?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "31) Czy lubisz zabawiać ludzi?", characters: [ { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "32) Czy lubisz oceloty?", characters: [ { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "33) Czy lubisz wymianę?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "34) Lubisz Netherowe twierdze?", characters: [ { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "35) Czy lubisz magię?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "36) Nosisz okuraly?", characters: [ { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, ] },
-  { text: "37) Czy lubisz rocka?", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "38) Czy lubisz króliki", characters: [ { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "39) Lubisz zielony?", characters: [ { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "40) Lubisz mięso", characters: [ { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "41) Lubisz Jaskinie", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "42) Jesteś kobietą?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 } ] },
-  { text: "43) Masz nos?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Freddy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Foxy", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Chica", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Bonnie", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "44) Czy lubisz czarny?", characters: [ { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Enderman", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "45) Jesteś miły dla innych?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Harry Potter", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "William Afton", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Creeper", yes: -1, no: 1, maybeYes: -0.5, maybeNo: -0.5 }, { name: "Freddy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Foxy", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Chica", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Bonnie", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Zombie (Minecraft)", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Sonic", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Shadow", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Piglin", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Enderman", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
-  { text: "46) Czy lubisz naukę?", characters: [ { name: "Harry Potter", yes: -1, no: 1, maybeYes: -0.5, maybeNo: 0.5 }, { name: "Voldemort", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 }, { name: "Hermiona", yes: 1, no: -1, maybeYes: 0.5, maybeNo: -0.5 } ] },
+  { text: "1) Jesteś szczupły?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Harry Potter", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Creeper", yes: 1, no: -1 }, { name: "Freddy", yes: -1, no: 1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Voldemort", yes: 1, no: -1 }, { name: "Chica", yes: -1, no: 1 }, { name: "Bonnie", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Piglin", yes: -1, no: 1 }, { name: "Enderman", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Golden Freddy", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Ron Weasley", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: 1, no: -1 }, { name: "Kee Kee", yes: 1, no: -1 } ] },
+  { text: "2) Czy czasami nie myślisz?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Harry Potter", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Shadow", yes: -1, no: 1 }, { name: "Hermiona", yes: -1, no: 1 }, { name: "Golden Freddy", yes: -1, no: 1 }, { name: "Ron Weasley", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: -1, no: 1 } ] }, 
+  { text: "3) Lubisz Niebieski?", characters: [ { name: "Bonnie", yes: 1, no: -1 }, { name: "Sonic", yes: 1, no: -1 } ] },
+  { text: "4) Lubisz Fioletowy?", characters: [ { name: "William Afton", yes: 1, no: -1 } ] },
+  { text: "5) Czy zabijasz w Minecraft wieśniaków?", characters: [ { name: "Zombie (Minecraft)", yes: 1, no: -1 } ] },
+  { text: "6) Lubisz szybko biegać?", characters: [ { name: "Sonic", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Shadow", yes: 1, no: -1 } ] },
+  { text: "7) Czy lubisz słońce?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1 }, { name: "Foxy", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: 1, no: -1 } ] },
+  { text: "8) Czy lubisz złoto?", characters: [ { name: "Piglin", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 } ] },
+  { text: "9) Czy lubisz cień?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Shadow", yes: 1, no: -1 } ] },
+  { text: "10) Lubisz jak się na ciebie patrzy?", characters: [ { name: "Enderman", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Harry Potter", yes: -1, no: 1 } ] },
+  { text: "11) Lubisz układać rzeczy na przykład na półkach?", characters: [ { name: "Enderman", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 } ] },
+  { text: "12) Czy lubisz wode?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Harry Potter", yes: 1, no: -1 },{ name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Sonic", yes: -1, no: 1 }, { name: "Enderman", yes: -1, no: 1 }, { name: "Shadow", yes: -1, no: 1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Ron Weasley", yes: -1, no: 1 } ] },
+  { text: "13) Lubisz brązowy?", characters: [ { name: "Freddy", yes: 1, no: -1 } ] },
+  { text: "14) Lubisz pizzę?", characters: [ { name: "Freddy", yes: 1, no: -1 }, { name: "Bonnie", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 } ] },
+  { text: "15) Lubisz niedźwiedzie?", characters: [ { name: "Freddy", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 } ] },
+  { text: "16) Podkradasz się do innych żeby ich wystraszyć?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Harry Potter", yes: -1, no: 1 }, { name: "Freddy", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Bonnie", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Creeper", yes: 1, no: -1 }, { name: "Hermiona", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: 1, no: -1 } ] },
+  { text: "17) Lubisz wybuchy na przykład dynamitu?", characters: [ { name: "Creeper", yes: 1, no: -1 } ] },
+  { text: "18) Czy boisz się kotów?", characters: [ { name: "Creeper", yes: 1, no: -1 }, { name: "Hermiona", yes: -1, no: 1 }, { name: "Kee Kee", yes: -1, no: 1 } ] },
+  { text: "19) Lubisz wymiar Nether z Minecraft?", characters: [ { name: "Piglin", yes: 1, no: -1 } ] },
+  { text: "20) Lubisz chodzić powoli?", characters: [ { name: "Sonic", yes: -1, no: 1 }, { name: "Freddy", yes: -1, no: 1 }, { name: "Foxy", yes: -1, no: 1 }, { name: "Bonnie", yes: -1, no: 1 }, { name: "William Afton", yes: -1, no: 1 }, { name: "Chica", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Shadow", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: 1, no: -1 } ] },
+  { text: "21) Czy boisz się ostrych narzędzi?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "William Afton", yes: -1, no: 1 }, { name: "Doctor Sawyer", yes: -1, no: 1 } ] },
+  { text: "22) Lubisz strzelać z łuku?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 } ] },
+  { text: "23) Czy masz dobrą celność?", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, ] },
+  { text: "24) Lubisz roboty?", characters: [ { name: "Freddy", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Bonnie", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 } ] },
+  { text: "25) Czy masz sekrety?", characters: [ { name: "William Afton", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: 1, no: -1 } ] },
+  { text: "26) Lubisz pierścienie?", characters: [ { name: "Sonic", yes: 1, no: -1 } ] },
+  { text: "27) Czy lubisz przygody?", characters: [ { name: "Harry Potter", yes: 1, no: -1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "Shadow", yes: -1, no: 1 } ] },
+  { text: "28) Czy jesteś wysoki?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1 }, { name: "Harry Potter", yes: -1, no: 1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Creeper", yes: -1, no: 1 }, { name: "Voldemort", yes: 1, no: -1 }, { name: "Freddy", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Bonnie", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Sonic", yes: -1, no: 1 }, { name: "Piglin", yes: -1, no: 1 }, { name: "Enderman", yes: 1, no: -1 }, { name: "Shadow", yes: -1, no: 1 }, { name: "Hermiona", yes: -1, no: 1 }, { name: "Golden Freddy", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: -1, no: 1 }, { name: "Ron Weasley", yes: -1, no: 1 }, { name: "Doctor Sawyer", yes: 1, no: -1 }, { name: "Kee Kee", yes: -1, no: 1 } ] },
+  { text: "29) Lubisz teleportację?", characters: [ { name: "Harry Potter", yes: -1, no: 1 }, { name: "Enderman", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 } ] },
+  { text: "30) Czy lubisz scenę i śpiew?", characters: [ { name: "Bonnie", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Freddy", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: -1, no: 1 } ] },
+  { text: "31) Czy lubisz zabawiać ludzi?", characters: [ { name: "William Afton", yes: 1, no: -1 } ] },
+  { text: "32) Czy lubisz koty?", characters: [ { name: "Creeper", yes: -1, no: 1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Ron Weasley", yes: -1, no: 1 }, { name: "Kee Kee", yes: 1, no: -1 } ] },
+  { text: "33) Czy lubisz wymianę?", characters: [ { name: "Piglin", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: 1, no: -1 } ] },
+  { text: "34) Lubisz Netherowe twierdze z Minecraft?", characters: [ { name: "Piglin", yes: 1, no: -1 } ] },
+  { text: "35) Czy lubisz magię?", characters: [ { name: "Harry Potter", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Ron Weasley", yes: 1, no: -1 } ] },
+  { text: "36) Nosisz okuraly?", characters: [ { name: "Harry Potter", yes: 1, no: -1 }, { name: "William Afton", yes: -1, no: 1 }, { name: "Hermiona", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: -1, no: 1 }, { name: "Ron Weasley", yes: -1, no: 1 } ] },
+  { text: "37) Czy lubisz rocka?", characters: [ { name: "Bonnie", yes: 1, no: -1 }, { name: "Harry Potter", yes: -1, no: 1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Ron Weasley", yes: -1, no: 1 } ] },
+  { text: "38) Czy lubisz króliki", characters: [ { name: "Bonnie", yes: 1, no: -1 } ] },
+  { text: "39) Lubisz zielony?", characters: [ { name: "Creeper", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 } ] },
+  { text: "40) Lubisz mięso", characters: [ { name: "Zombie (Minecraft)", yes: 1, no: -1 } ] },
+  { text: "41) Lubisz Jaskinie", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Creeper", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: 1, no: -1 }, { name: "Shadow", yes: -1, no: 1 } ] },
+  { text: "42) Jesteś kobietą?", characters: [ { name: "Chica", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 } ] },
+  { text: "43) Jesteś mężczyzną?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1 }, { name: "Harry Potter", yes: -1, no: 1 }, { name: "William Afton", yes: -1, no: 1 }, { name: "Creeper", yes: -1, no: 1 }, { name: "Freddy", yes: -1, no: 1 }, { name: "Foxy", yes: -1, no: 1 }, { name: "Voldemort", yes: -1, no: 1 }, { name: "Bonnie", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Sonic", yes: -1, no: 1 }, { name: "Piglin", yes: -1, no: 1 }, { name: "Enderman", yes: -1, no: 1 }, { name: "Shadow", yes: -1, no: 1 }, { name: "Ron Weasley", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: 1, no: -1 } ] },
+  { text: "44) Masz nos?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1 }, { name: "Harry Potter", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Creeper", yes: -1, no: 1 }, { name: "Voldemort", yes: -1, no: 1 }, { name: "Freddy", yes: 1, no: -1 }, { name: "Foxy", yes: 1, no: -1 }, { name: "Chica", yes: 1, no: -1 }, { name: "Bonnie", yes: 1, no: -1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "Piglin", yes: 1, no: -1 }, { name: "Enderman", yes: -1, no: 1 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Golden Freddy", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Ron Weasley", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: -1, no: 1 }, { name: "Kee Kee", yes: 1, no: -1 } ] },
+  { text: "45) Czy lubisz czarny?", characters: [ { name: "Voldemort", yes: 1, no: -1 }, { name: "Enderman", yes: 1, no: -1 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Doctor Sawyer", yes: 1, no: -1 }, { name: "Kee Kee", yes: 1, no: -1 } ] },
+  { text: "46) Jesteś miły dla innych?", characters: [ { name: "Szkielet (Minecraft)", yes: -1, no: 1 }, { name: "Harry Potter", yes: 1, no: -1 }, { name: "William Afton", yes: -1, no: 1 }, { name: "Creeper", yes: -1, no: 1 }, { name: "Freddy", yes: -1, no: 1 }, { name: "Foxy", yes: -1, no: 1 }, { name: "Voldemort", yes: -1, no: 1 }, { name: "Chica", yes: -1, no: 1 }, { name: "Bonnie", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Sonic", yes: 1, no: -1 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Piglin", yes: -1, no: 1 }, { name: "Enderman", yes: -1, no: 1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Ron Weasley", yes: -1, no: 1 }, { name: "Doctor Sawyer", yes: -1, no: 1 } ] },
+  { text: "47) Czy lubisz naukę?", characters: [ { name: "Harry Potter", yes: -1, no: 1 }, { name: "Voldemort", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Ron Weasley", yes: -1, no: 1 }, { name: "Doctor Sawyer", yes: 1, no: -1 } ] },
+  { text: "48) Masz jasną skórę", characters: [ { name: "Szkielet (Minecraft)", yes: 1, no: -1 }, { name: "Harry Potter", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 }, { name: "Voldemort", yes: 1, no: -1 }, { name: "Piglin", yes: 1, no: -1 }, { name: "Hermiona", yes: 1, no: -1 }, { name: "Lily Lovebraids", yes: 1, no: -1 }, { name: "Ron Weasley", yes: 1, no: -1 } ] },
+  { text: "49) Masz ciemną skórę", characters: [ { name: "Freddy", yes: 1, no: -1 }, { name: "Enderman", yes: 1, no: -1 }, { name: "Shadow", yes: 1, no: -1 }, { name: "Kee Kee", yes: 1, no: -1 } ] },
+  { text: "50) Lubisz farbować włosy?", characters: [ { name: "Lily Lovebraids", yes: 1, no: -1 } ] },
+  { text: "51) Czy jesteś bez włosów?", characters: [ { name: "Voldemort", yes: 1, no: -1 } ] },
+  { text: "52) Czy masz blond włosy?", characters: [ { name: "Hermiona", yes: 1, no: -1 }, { name: "William Afton", yes: 1, no: -1 } ] },
+  { text: "53) Czy masz czarne włosy?", characters: [ { name: "Harry Potter", yes: 1, no: -1 } ] },
+  { text: "54) Czy masz rude włosy?", characters: [ { name: "Ron Weasley", yes: 1, no: -1 } ] },
+  { text: "55) Lubisz pająki?", characters: [ { name: "Ron Weasley", yes: -1, no: 1 }, { name: "Lily Lovebraids", yes: -1, no: 1 } ] },
+  { text: "56) Lubisz Experymenty?", characters: [ { name: "Doctor Sawyer", yes: 1, no: -1 } ] },
+  { text: "56) Lubisz Pomarańczowy?", characters: [ { name: "Ron Weasley", yes: 1, no: -1 } ] },
+  { text: "57) Lubisz jak jest gorąco?", characters: [ { name: "Foxy", yes: -1, no: 1 }, { name: "Kee Kee", yes: 1, no: -1 }, { name: "Piglin", yes: 1, no: -1 }, { name: "Sonic", yes: -1, no: 1 }, { name: "Zombie (Minecraft)", yes: -1, no: 1 }, { name: "Szkielet (Minecraft)", yes: -1, no: 1 } ] }
 ];
 
 let current = 0;
@@ -139,8 +149,6 @@ const resultBox = document.getElementById("result");
 const skipBtn = document.getElementById("skip-btn");
 const yesBtn = document.getElementById("yes-btn");
 const noBtn = document.getElementById("no-btn");
-const maybeYesBtn = document.getElementById("maybe-yes-btn");
-const maybeNoBtn = document.getElementById("maybe-no-btn");
 const restartBtn = document.getElementById("restart-btn");
 
 function showQuestion() {
@@ -159,44 +167,62 @@ function answer(response) {
 }
 
 function calculateResult() {
+  questionBox.style.display = "none";
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
+  skipBtn.style.display = "none";
+  restartBtn.style.display = "inline-block";
+
+  let scores = {
+  
+    "Bonnie": 0,
+    
+    "Chica": 0,
+    "Creeper": 0,
+    
+    "Doctor Sawyer": 0,
+    
+    "Enderman": 0,
+    
+    "Foxy": 0,
+    "Freddy": 0,
+    
+    "Golden Freddy": 0,
+    
+    "Harry Potter": 0,
+    "Hermiona": 0,
+    
+    "Kee Kee": 0,
+    
+    "Lily Lovebraids": 0,
+    
+    "Piglin": 0,
+    
+    "Ron Weasley": 0,
+    
+    "Shadow": 0,
+    "Sonic": 0,
+    "Szkielet (Minecraft)": 0,
+    
+    "Voldemort": 0,
+    
+    "William Afton": 0,
+    
+    "Zombie (Minecraft)": 0
+    
+  };
+
   let results = [];
 
-questionBox.style.display = "none";
-yesBtn.style.display = "none";
-maybeYesBtn.style.display = "none";
-noBtn.style.display = "none";
-maybeNoBtn.style.display = "none";
-skipBtn.style.display = "none";
-restartBtn.style.display = "inline-block";
-
-let scores = {
-  "Bonnie": 0,
-  "Chica": 0,
-  "Creeper": 0,
-  "Enderman": 0,
-  "Foxy": 0,
-  "Freddy": 0,
-  "Harry Potter": 0,
-  "Hermiona": 0,
-  "Piglin": 0,
-  "Shadow": 0,
-  "Sonic": 0,
-  "Szkielet (Minecraft)": 0,
-  "Voldemort": 0,
-  "William Afton": 0,
-  "Zombie (Minecraft)": 0
-};
-
-answers.forEach((answer, i) => {
-  const q = questions[i];
-
-  q.characters.forEach(c => {
-    if (answer === "tak") scores[c.name] += c.yes ?? 0;
-    if (answer === "nie") scores[c.name] += c.no ?? 0;
-    if (answer === "chyba-tak") scores[c.name] += c.maybeYes ?? (c.yes * 0.5);
-    if (answer === "chyba-nie") scores[c.name] += c.maybeNo ?? (c.no * 0.5);
+  answers.forEach((answer, i) => {
+    const q = questions[i];
+    if (answer === "tak") {
+      q.characters.forEach(c => scores[c.name] += c.yes);
+    }
+    if (answer === "nie") {
+      q.characters.forEach(c => scores[c.name] += c.no);
+    }
   });
-});
 
   let maxScore = Math.max(...Object.values(scores));
   for (let char in scores) {
@@ -213,12 +239,19 @@ answers.forEach((answer, i) => {
       let details = `<button id="show-details" class="btn btn-skip">Ukryj szczegóły</button>`;
       details += "<h2>Pełne wyniki:</h2>";
       results.forEach(r => {
-        details += `<p>${r.name}: ${r.percent}%</p>`;
+        const color = r.percent < 0 ? "red" : "#ffcc00";
+        details += `<p style="color:${color}">${r.name}: ${r.percent}%</p>`;
       });
       resultBox.innerHTML = details;
     } else {
-      let best = results[0];
-      let resultText = `<h2>Twój wynik:</h2><p><strong>${best.name}</strong> (${best.percent}%)</p>`;
+let bestPercent = results[0].percent;
+let bestCharacters = results.filter(r => r.percent === bestPercent);
+
+let resultText = `<h2>Twój wynik:</h2>`;
+
+bestCharacters.forEach(char => {
+  resultText += `<p><strong>${char.name}</strong> (${char.percent}%)</p>`;
+});
       resultText += `<button id="show-details" class="btn btn-skip">Pokaż szczegóły</button>`;
       resultBox.innerHTML = resultText;
     }
@@ -232,7 +265,6 @@ answers.forEach((answer, i) => {
   renderView();
 }
 
-// ✅ teraz te funkcje są poza calculateResult()
 function skip() {
   answers.push("skip");
   current++;
@@ -244,10 +276,7 @@ function restart() {
   answers = [];
   questionBox.style.display = "block";
   yesBtn.style.display = "inline-block";
-  maybeYesBtn.style.display = "inline-block";
-  noBtn.style.display = "inline-block";
-  maybeNoBtn.style.display = "inline-block";
-  skipBtn.style.display = "inline-block";
+  noBtn.style.display = "inline-block"; 
   restartBtn.style.display = "none";
   resultBox.innerHTML = "";
   showQuestion();
